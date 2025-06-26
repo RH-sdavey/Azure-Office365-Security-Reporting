@@ -1,0 +1,9 @@
+2025-06-26 18:56:08 [INFO] Azure Security Report started
+2025-06-26 18:56:08 [INFO] Checking required PowerShell modules...
+2025-06-26 18:56:08 [INFO] Module 'Az.Accounts' is installed.
+2025-06-26 18:56:09 [INFO] Module 'Az.Compute' is not installed.
+2025-06-26 18:56:09 [INFO] Module 'Az.Security' is not installed.
+2025-06-26 18:56:09 [INFO] Module 'Microsoft.Graph.Users' is installed.
+2025-06-26 18:56:09 [INFO] Module 'Microsoft.Graph.Identity.SignIns' is installed.
+2025-06-26 18:56:09 [INFO] Missing modules: Az.Compute, Az.Security
+2025-06-26 18:56:12 [INFO] Installing module: Az.Compute
