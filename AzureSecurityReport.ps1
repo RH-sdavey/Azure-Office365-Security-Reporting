@@ -51,10 +51,10 @@ function Write-ColorOutput {
 # Function to display title
 function Show-Title {
     Clear-Host
-    Write-Host "=" * 60 -ForegroundColor Cyan
-    Write-Host "              AZURE SECURITY REPORT" -ForegroundColor Yellow
-    Write-Host "                github.com/SteffMet" -ForegroundColor Gray
-    Write-Host "=" * 60 -ForegroundColor Cyan
+    Write-Host "------------------------------------------------------------------" -ForegroundColor Cyan
+    Write-Host "              AZURE & OFFICE 365 SECURITY REPORT SCRIPT " -ForegroundColor Yellow
+    Write-Host "               By github.com/SteffMet" -ForegroundColor Blue
+    Write-Host "------------------------------------------------------------------"
     Write-Host ""
 }
 

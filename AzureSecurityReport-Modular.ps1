@@ -1,0 +1,192 @@
+#Requires -Version 7.0
+<#
+.SYNOPSIS
+    Azure Security Report - Modular Version
+.DESCRIPTION
+    Simplified main script that uses modular components for security auditing
+.AUTHOR
+    github.com/SteffMet
+.VERSION
+    2.0
+.DATE
+    June 26, 2025
+#>
+
+# Import modules
+$ModulesPath = Join-Path $PSScriptRoot "Modules"
+Import-Module (Join-Path $ModulesPath "AzureSecurityCore.psm1") -Force
+Import-Module (Join-Path $ModulesPath "AzureSecurityIAM.psm1") -Force
+Import-Module (Join-Path $ModulesPath "AzureSecurityDataProtection.psm1") -Force
+Import-Module (Join-Path $ModulesPath "AzureSecurityOffice365.psm1") -Force
+
+# Teams submenu
+function Show-TeamsMenu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "Microsoft Teams Security Checks" -ForegroundColor Cyan
+        Write-Host "===============================" -ForegroundColor Cyan
+        Write-Host "1. Check External Access Configuration"
+        Write-Host "2. Report Teams with External Users or Guests"
+        Write-Host "3. Return to Office 365 Menu"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-3)"
+        
+        switch ($Choice) {
+            "1" { Get-TeamsExternalAccessReport; Read-Host "Press Enter to continue" }
+            "2" { Get-TeamsWithExternalUsersReport; Read-Host "Press Enter to continue" }
+            "3" { return }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+
+# Office 365 submenu
+function Show-Office365Menu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "Read-Only Office 365 Audit Menu" -ForegroundColor Cyan
+        Write-Host "===============================" -ForegroundColor Cyan
+        Write-Host "1. License Usage Report"
+        Write-Host "2. Inactive Accounts Report"
+        Write-Host "3. Check Mailbox Forwarding Rules"
+        Write-Host "4. Microsoft Teams"
+        Write-Host "5. Return to Main Menu"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-5)"
+        
+        switch ($Choice) {
+            "1" { Get-LicenseUsageReport; Read-Host "Press Enter to continue" }
+            "2" { Get-InactiveAccountsReport; Read-Host "Press Enter to continue" }
+            "3" { Get-MailboxForwardingReport; Read-Host "Press Enter to continue" }
+            "4" { Show-TeamsMenu }
+            "5" { return }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+
+# IAM submenu
+function Show-IAMMenu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "IAM Security Checks" -ForegroundColor Cyan
+        Write-Host "===================" -ForegroundColor Cyan
+        Write-Host "1. Check MFA Status"
+        Write-Host "2. Check Guest User Access"
+        Write-Host "3. Check Password Expiry Settings"
+        Write-Host "4. Check Conditional Access Policies"
+        Write-Host "5. Return to Main Menu"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-5)"
+        
+        switch ($Choice) {
+            "1" { Test-MFAStatus; Read-Host "Press Enter to continue" }
+            "2" { Test-GuestUserAccess; Read-Host "Press Enter to continue" }
+            "3" { Test-PasswordExpirySettings; Read-Host "Press Enter to continue" }
+            "4" { Test-ConditionalAccessPolicies; Read-Host "Press Enter to continue" }
+            "5" { return }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+
+# Data Protection submenu
+function Show-DataProtectionMenu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "Data Protection Security Checks" -ForegroundColor Cyan
+        Write-Host "===============================" -ForegroundColor Cyan
+        Write-Host "1. Check TLS Configuration on VMs"
+        Write-Host "2. Check Virtual Machine Encryption"
+        Write-Host "3. Return to Main Menu"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-3)"
+        
+        switch ($Choice) {
+            "1" { Test-TLSConfiguration; Read-Host "Press Enter to continue" }
+            "2" { Test-VMEncryption; Read-Host "Press Enter to continue" }
+            "3" { return }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+
+# Main menu
+function Show-MainMenu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "Read-Only Azure & Office 365 Security Audit Menu" -ForegroundColor Cyan
+        Write-Host "================================================" -ForegroundColor Cyan
+        Write-Host "1. Identity and Access Management Report (Azure AD)"
+        Write-Host "2. Data Protection Report (Azure)"
+        Write-Host "3. Office 365 Security Report"
+        Write-Host "4. Exit"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-4)"
+        
+        switch ($Choice) {
+            "1" { Show-IAMMenu }
+            "2" { Show-DataProtectionMenu }
+            "3" { Show-Office365Menu }
+            "4" { 
+                Write-ColorOutput "Thank you for using Azure & Office 365 Security Report!" "Green"
+                Write-ColorOutput "Log file saved as: $script:LogFile" "Yellow"
+                return 
+            }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+
+# Main script execution
+function Main {
+    Show-Title
+    Write-Log "Azure Security Report (Modular) started" "INFO"
+    
+    # Required modules for this script
+    $RequiredModules = @(
+        "Az.Accounts", 
+        "Az.Compute", 
+        "Az.Security", 
+        "Microsoft.Graph.Users", 
+        "Microsoft.Graph.Identity.SignIns",
+        "Microsoft.Graph.Reports",
+        "ExchangeOnlineManagement",
+        "MicrosoftTeams"
+    )
+    
+    # Check required modules
+    if (-not (Test-RequiredModules -RequiredModules $RequiredModules)) {
+        Write-Log "Module check failed. Exiting." "ERROR"
+        Read-Host "Press Enter to exit"
+        exit 1
+    }
+    
+    # Authenticate to Azure services
+    if (-not (Connect-AzureServices)) {
+        Write-Log "Authentication failed. Exiting." "ERROR"
+        Read-Host "Press Enter to exit"
+        exit 1
+    }
+    
+    Write-ColorOutput "Authentication successful. Starting security audit..." "Green"
+    Start-Sleep 2
+    
+    # Show main menu
+    Show-MainMenu
+    
+    Write-Log "Azure Security Report completed" "INFO"
+}
+
+# Start the script
+Main
