@@ -14,6 +14,62 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Multi-tenant support
 - REST API integration
 
+## [3.0.0] - 2025-06-26
+
+### 🚀 Major Release - Modular Architecture & Enhanced TLS Analysis
+
+### Added
+- **Azure Resource Graph Integration** - Revolutionary TLS configuration analysis using Azure Resource Graph
+- **Visual Documentation** - Added MenuLayout.gif for interactive menu demonstration
+- **Migration Documentation** - Comprehensive migration notes from single-file to modular approach
+- **Intelligent TLS Assessment** - Smart analysis based on VM metadata, OS type, and VM size patterns
+- **Enhanced Module Dependencies** - Added Az.ResourceGraph to required modules
+
+### Changed
+- **BREAKING: Version 3.0** - Modular architecture is now the primary approach
+- **TLS Configuration Check** - Completely rewritten to use Azure Resource Graph instead of simulated checks
+- **Menu Documentation** - Comprehensive menu structure documentation with all submenus
+- **Deprecation Notice** - Single-file script (AzureSecurityReport.ps1) officially deprecated
+
+### Improved
+- **Performance** - Azure Resource Graph queries are significantly faster than individual VM calls
+- **Accuracy** - TLS analysis now based on actual VM metadata rather than random simulation
+- **User Experience** - Visual menu overview with GIF demonstration
+- **Documentation** - Complete menu hierarchy and navigation paths documented
+
+### Removed
+- **Single-file Reference** - Removed references to deprecated AzureSecurityReport.ps1 from installation instructions
+- **Simulated TLS Checks** - Replaced random TLS compliance simulation with real metadata analysis
+
+### Technical Details
+- Azure Resource Graph provides comprehensive VM metadata for intelligent security assessment
+- Modern VM sizes (v3-v5 generations) automatically flagged as TLS 1.2 compliant
+- Legacy VM sizes flagged for manual verification
+- Enhanced error handling and module auto-installation
+- Detailed compliance notes and recommendations
+
+## [2.0.1] - 2025-06-26
+
+### Fixed
+- **Microsoft Graph Assembly Conflicts** - Comprehensive solution for "Assembly with same name is already loaded" errors
+- **Module Import Strategy** - Reverted to dependency-check approach instead of attempting dynamic imports
+- **Session Management** - Enhanced session restart capabilities with automatic restart helpers
+- **Function Visibility** - Ensured all Core module functions are properly exported and accessible
+
+### Added
+- **Start-AzureSecurityReport.ps1** - Launcher script with automatic conflict resolution
+- **Restart-PowerShellSession.ps1** - Automated PowerShell session restart utility
+- **Fix-GraphModules.ps1** - Enhanced utility script to resolve Graph module assembly conflicts
+- **Test-Scripts.ps1** - Comprehensive validation script for all components
+- **Assembly Conflict Detection** - Automatic detection and resolution guidance
+- **Enhanced Documentation** - Comprehensive troubleshooting section with multiple resolution options
+
+### Changed
+- **Authentication Flow** - Improved error handling for assembly conflicts with restart options
+- **Module Loading Strategy** - Simplified approach that relies on successful authentication for module availability
+- **Error Messages** - Clearer guidance for users encountering assembly conflicts
+- **User Experience** - Added launcher script for simplified execution
+
 ## [2.0.0] - 2025-06-26
 
 ### Added

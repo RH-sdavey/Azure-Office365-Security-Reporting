@@ -7,17 +7,22 @@
 .AUTHOR
     github.com/SteffMet
 .VERSION
-    2.0
+    3.0
 .DATE
     June 26, 2025
 #>
 
 # Import modules
 $ModulesPath = Join-Path $PSScriptRoot "Modules"
-Import-Module (Join-Path $ModulesPath "AzureSecurityCore.psm1") -Force
-Import-Module (Join-Path $ModulesPath "AzureSecurityIAM.psm1") -Force
-Import-Module (Join-Path $ModulesPath "AzureSecurityDataProtection.psm1") -Force
-Import-Module (Join-Path $ModulesPath "AzureSecurityOffice365.psm1") -Force
+
+# Import Core module first and dot-source it to make functions available in current scope
+$CoreModulePath = Join-Path $ModulesPath "AzureSecurityCore.psm1"
+Import-Module $CoreModulePath -Force -Global
+
+# Import other modules
+Import-Module (Join-Path $ModulesPath "AzureSecurityIAM.psm1") -Force -Global
+Import-Module (Join-Path $ModulesPath "AzureSecurityDataProtection.psm1") -Force -Global
+Import-Module (Join-Path $ModulesPath "AzureSecurityOffice365.psm1") -Force -Global
 
 # Teams submenu
 function Show-TeamsMenu {
@@ -151,13 +156,14 @@ function Show-MainMenu {
 # Main script execution
 function Main {
     Show-Title
-    Write-Log "Azure Security Report (Modular) started" "INFO"
+    Write-Log "Azure Security Report (Modular) v3.0 started" "INFO"
     
     # Required modules for this script
     $RequiredModules = @(
         "Az.Accounts", 
         "Az.Compute", 
-        "Az.Security", 
+        "Az.Security",
+        "Az.ResourceGraph", 
         "Microsoft.Graph.Users", 
         "Microsoft.Graph.Identity.SignIns",
         "Microsoft.Graph.Reports",

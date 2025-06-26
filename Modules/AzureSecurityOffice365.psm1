@@ -5,6 +5,13 @@
 function Get-LicenseUsageReport {
     Write-ColorOutput "Retrieving Office 365 license usage..." "Yellow"
     
+    # Check if modules are already loaded (from successful authentication)
+    if (-not (Get-Module -Name "Microsoft.Graph.Identity.DirectoryManagement" -ErrorAction SilentlyContinue)) {
+        Write-ColorOutput "Required Microsoft Graph modules not loaded. Please ensure authentication was successful." "Red"
+        Write-ColorOutput "If you see assembly conflicts, restart PowerShell and try again." "Yellow"
+        return
+    }
+    
     try {
         # Get all SKUs (license types) in the tenant
         $SubscribedSkus = Get-MgSubscribedSku -All -ErrorAction Stop

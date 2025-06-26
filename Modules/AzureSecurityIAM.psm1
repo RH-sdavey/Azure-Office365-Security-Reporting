@@ -5,6 +5,16 @@
 function Test-MFAStatus {
     Write-ColorOutput "Checking MFA status for all users..." "Yellow"
     
+    # Check if modules are already loaded (from successful authentication)
+    $UsersModuleLoaded = Get-Module -Name "Microsoft.Graph.Users" -ErrorAction SilentlyContinue
+    $DirectoryModuleLoaded = Get-Module -Name "Microsoft.Graph.Identity.DirectoryManagement" -ErrorAction SilentlyContinue
+    
+    if (-not $UsersModuleLoaded -or -not $DirectoryModuleLoaded) {
+        Write-ColorOutput "Required Microsoft Graph modules not loaded. Please ensure authentication was successful." "Red"
+        Write-ColorOutput "If you see assembly conflicts, restart PowerShell and try again." "Yellow"
+        return
+    }
+    
     try {
         # Get all users with pagination
         $Users = Get-MgUser -All -Property Id,UserPrincipalName,DisplayName -PageSize 100 | Where-Object { $_.UserPrincipalName -notlike "*#EXT#*" }
@@ -69,6 +79,13 @@ function Test-MFAStatus {
 function Test-GuestUserAccess {
     Write-ColorOutput "Checking guest user access..." "Yellow"
     
+    # Check if modules are already loaded (from successful authentication)
+    if (-not (Get-Module -Name "Microsoft.Graph.Users" -ErrorAction SilentlyContinue)) {
+        Write-ColorOutput "Required Microsoft Graph modules not loaded. Please ensure authentication was successful." "Red"
+        Write-ColorOutput "If you see assembly conflicts, restart PowerShell and try again." "Yellow"
+        return
+    }
+    
     try {
         $GuestUsers = Get-MgUser -Filter "userType eq 'Guest'" -All -Property UserPrincipalName,DisplayName,CreatedDateTime -PageSize 100
         
@@ -102,6 +119,13 @@ function Test-GuestUserAccess {
 # Function to check password expiry settings
 function Test-PasswordExpirySettings {
     Write-ColorOutput "Checking password expiry settings..." "Yellow"
+    
+    # Check if modules are already loaded (from successful authentication)
+    if (-not (Get-Module -Name "Microsoft.Graph.Users" -ErrorAction SilentlyContinue)) {
+        Write-ColorOutput "Required Microsoft Graph modules not loaded. Please ensure authentication was successful." "Red"
+        Write-ColorOutput "If you see assembly conflicts, restart PowerShell and try again." "Yellow"
+        return
+    }
     
     try {
         $Users = Get-MgUser -All -Property UserPrincipalName,DisplayName,PasswordPolicies -PageSize 100 | Where-Object { $_.UserPrincipalName -notlike "*#EXT#*" }
@@ -137,6 +161,13 @@ function Test-PasswordExpirySettings {
 # Function to check conditional access policies
 function Test-ConditionalAccessPolicies {
     Write-ColorOutput "Checking Conditional Access policies..." "Yellow"
+    
+    # Check if modules are already loaded (from successful authentication)
+    if (-not (Get-Module -Name "Microsoft.Graph.Identity.SignIns" -ErrorAction SilentlyContinue)) {
+        Write-ColorOutput "Required Microsoft Graph modules not loaded. Please ensure authentication was successful." "Red"
+        Write-ColorOutput "If you see assembly conflicts, restart PowerShell and try again." "Yellow"
+        return
+    }
     
     try {
         $CAPolicies = Get-MgIdentityConditionalAccessPolicy -All -ErrorAction Stop

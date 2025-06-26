@@ -20,7 +20,7 @@ This project provides a modular, read-only security assessment script that helps
   - Conditional Access policy evaluation
 
 - **🛡️ Data Protection**
-  - Azure VM TLS configuration analysis
+  - Azure VM TLS configuration analysis (Azure Resource Graph)
   - Virtual Machine disk encryption status
   - Security compliance reporting
 
@@ -63,8 +63,14 @@ $PSVersionTable.PSVersion
    cd Azure-Office365-Security-Reporting
    ```
 
-2. **Run the script:**
+2. **Run the launcher script (Recommended):**
    ```powershell
+   .\Start-AzureSecurityReport.ps1
+   ```
+   
+   **Or run directly:**
+   ```powershell
+   # Modular version (recommended)
    .\AzureSecurityReport-Modular.ps1
    ```
 
@@ -83,6 +89,7 @@ The script will automatically prompt to install these modules if missing:
 Az.Accounts
 Az.Compute
 Az.Security
+Az.ResourceGraph
 
 # Microsoft Graph modules
 Microsoft.Graph.Users
@@ -119,18 +126,24 @@ AuditLog.Read.All
 
 ```
 Azure-Office365-Security-Reporting/
-├── 📜 AzureSecurityReport-Modular.ps1      # Main entry point
+├── 📜 AzureSecurityReport-Modular.ps1      # Main entry point (v3.0)
 ├── 📁 Modules/
 │   ├── AzureSecurityCore.psm1              # Core utilities & authentication
 │   ├── AzureSecurityIAM.psm1               # Azure IAM security checks
 │   ├── AzureSecurityDataProtection.psm1    # Azure data protection checks
 │   └── AzureSecurityOffice365.psm1         # Office 365 security checks
-├── 🔧 Build-SingleFile.ps1                 # Builds single-file deployment
+├── � Start-AzureSecurityReport.ps1        # Launcher script (recommended)
+├── �🔧 Build-SingleFile.ps1                 # Builds single-file deployment
+├── 🎬 MenuLayout.gif                        # Visual menu overview
 ├── 📋 README.md                            # This file
-└── 📝 AzureSecurityReport_*.log            # Generated log files
+├── 📝 MIGRATION_NOTES.md                   # Migration from v1.1 to v3.0
+└── � AzureSecurityReport_*.log            # Generated log files
 ```
 
 ## 🎯 Usage Examples
+
+### Visual Menu Overview
+![Menu Layout Demo](MenuLayout.gif)
 
 ### Main Menu Navigation
 ```
@@ -140,6 +153,46 @@ Read-Only Azure & Office 365 Security Audit Menu
 2. Data Protection Report (Azure)
 3. Office 365 Security Report
 4. Exit
+```
+
+#### 1. Identity and Access Management (IAM) Submenu
+```
+IAM Security Checks
+===================
+1. Check MFA Status
+2. Check Guest User Access
+3. Check Password Expiry Settings
+4. Check Conditional Access Policies
+5. Return to Main Menu
+```
+
+#### 2. Data Protection Submenu
+```
+Data Protection Security Checks
+===============================
+1. Check TLS Configuration on VMs (Azure Resource Graph)
+2. Check Virtual Machine Encryption
+3. Return to Main Menu
+```
+
+#### 3. Office 365 Security Submenu
+```
+Read-Only Office 365 Audit Menu
+===============================
+1. License Usage Report
+2. Inactive Accounts Report
+3. Check Mailbox Forwarding Rules
+4. Microsoft Teams
+5. Return to Main Menu
+```
+
+##### 3.4. Microsoft Teams Submenu
+```
+Microsoft Teams Security Checks
+===============================
+1. Check External Access Configuration
+2. Report Teams with External Users or Guests
+3. Return to Office 365 Menu
 ```
 
 ### Sample Output - License Analysis
@@ -201,6 +254,58 @@ Import-Module .\Modules\AzureSecurityCore.psm1
 # Add your custom security checks here
 ```
 
+## 🛠️ Troubleshooting
+
+### Microsoft Graph Assembly Conflicts
+If you encounter "Assembly with same name is already loaded" errors:
+
+**🔧 Quick Fix Options:**
+
+1. **Use the launcher script (Recommended)**:
+   ```powershell
+   .\Start-AzureSecurityReport.ps1
+   ```
+
+2. **Use the fix script**:
+   ```powershell
+   .\Fix-GraphModules.ps1
+   ```
+
+3. **Manual session restart**:
+   ```powershell
+   # Exit PowerShell completely
+   exit
+   
+   # Start fresh PowerShell 7 session
+   pwsh
+   cd "path\to\Azure-Office365-Security-Reporting"
+   .\AzureSecurityReport-Modular.ps1
+   ```
+
+4. **Automatic restart helper**:
+   ```powershell
+   .\Restart-PowerShellSession.ps1
+   ```
+
+**🔍 Why This Happens:**
+Microsoft Graph PowerShell modules use .NET assemblies that can conflict when loaded multiple times in the same session. This is a known limitation of the Microsoft Graph SDK.
+
+### Common Issues
+
+| Issue | Solution |
+|-------|----------|
+| Module import errors | Run `Install-Module` as Administrator |
+| Authentication failures | Verify account permissions and retry |
+| CSV export errors | Check file path permissions |
+| Graph API rate limits | Wait and retry after a few minutes |
+
+### Performance Optimization
+
+For large tenants (1000+ users):
+- Use `-PageSize` parameter where supported
+- Run during off-peak hours
+- Consider filtering results to reduce data volume
+
 ## 🛡️ Security & Compliance
 
 ### Read-Only Operations
@@ -244,49 +349,10 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 | Component | Limitation | Workaround |
 |-----------|------------|------------|
-| VM TLS Checking | Requires VM access for actual verification | Planned: Azure Policy integration |
+| VM TLS Checking | Uses Azure Resource Graph metadata analysis, not direct VM inspection | Azure Resource Graph provides VM metadata for intelligent TLS assessment |
 | Large Teams Environments | May take time to scan all teams | Progress indicators implemented |
 | Audit Log Retention | Limited by tenant audit log settings | Documented in prerequisites |
 | Exchange Connection | Requires separate authentication | Automatic connection handling |
-
-## 🆘 Troubleshooting
-
-### Common Issues
-
-<details>
-<summary>🔧 Module Installation Errors</summary>
-
-```powershell
-# Error: Module not found
-Install-Module <ModuleName> -Force -AllowClobber
-
-# Error: Execution policy
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-```
-</details>
-
-<details>
-<summary>🔐 Authentication Problems</summary>
-
-```powershell
-# Clear existing sessions
-Disconnect-AzAccount
-Disconnect-MgGraph
-Disconnect-ExchangeOnline
-
-# Re-run the script
-.\AzureSecurityReport-Modular.ps1
-```
-</details>
-
-<details>
-<summary>📊 Permission Issues</summary>
-
-Ensure your account has the required roles:
-- Azure AD: Global Reader or Security Reader
-- Office 365: View-Only Organization Management
-- Microsoft Graph: Required API permissions granted
-</details>
 
 ## 📞 Support
 
