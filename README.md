@@ -9,7 +9,7 @@
 > **A comprehensive PowerShell 7 security auditing tool for Azure and Office 365 environments**
 
 This project provides a modular, read-only security assessment script that helps organizations identify security gaps, compliance issues, and cost optimization opportunities across their Azure and Office 365 infrastructure.
-
+![Menu Layout Demo](MenuLayout.gif)
 ## 🌟 Key Features
 
 ### 🔐 Azure Security Auditing
@@ -141,9 +141,6 @@ Azure-Office365-Security-Reporting/
 ```
 
 ## 🎯 Usage Examples
-
-### Visual Menu Overview
-![Menu Layout Demo](MenuLayout.gif)
 
 ### Main Menu Navigation
 ```
@@ -319,18 +316,6 @@ For large tenants (1000+ users):
 - 🔒 Local CSV exports with configurable file paths
 - 🔒 Comprehensive logging for compliance auditing
 
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### Development Setup
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes and test thoroughly
-4. Commit your changes: `git commit -m 'Add amazing feature'`
-5. Push to the branch: `git push origin feature/amazing-feature`
-6. Open a Pull Request
-
 ### Reporting Issues
 - 🐛 [Report bugs](https://github.com/SteffMet/Azure-Office365-Security-Reporting/issues/new?template=bug_report.md)
 - 💡 [Request features](https://github.com/SteffMet/Azure-Office365-Security-Reporting/issues/new?template=feature_request.md)
@@ -359,16 +344,6 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 - 📧 **Issues**: [GitHub Issues](https://github.com/SteffMet/Azure-Office365-Security-Reporting/issues)
 - 📖 **Documentation**: [Wiki](https://github.com/SteffMet/Azure-Office365-Security-Reporting/wiki)
 - 💬 **Discussions**: [GitHub Discussions](https://github.com/SteffMet/Azure-Office365-Security-Reporting/discussions)
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- Microsoft Graph API team for comprehensive security APIs
-- PowerShell community for module development best practices
-- Azure security community for feedback and testing
 
 ---
 
