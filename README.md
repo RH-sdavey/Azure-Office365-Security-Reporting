@@ -9,7 +9,9 @@
 > **A comprehensive PowerShell 7 security auditing tool for Azure and Office 365 environments**
 
 This project provides a modular, read-only security assessment script that helps organizations identify security gaps, compliance issues, and cost optimization opportunities across their Azure and Office 365 infrastructure.
+
 ![Menu Layout Demo](MenuLayout.gif)
+
 ## 🌟 Key Features
 
 ### 🔐 Azure Security Auditing
