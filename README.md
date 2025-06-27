@@ -355,6 +355,6 @@ For large tenants (1000+ users):
 
 Made with ❤️ by [SteffMet](https://github.com/SteffMet)
 
-*Last Updated: June 26, 2025*
+*Last Updated: June 27, 2025*
 
 </div>
