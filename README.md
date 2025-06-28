@@ -10,9 +10,9 @@
 > **A comprehensive PowerShell 7 security auditing tool for Azure and Office 365 environments**
 
 This project provides a modular, read-only security assessment script to help organizations identify security gaps, compliance issues, and cost optimization opportunities across Azure and Office 365 infrastructure.
-
+<div align="center">
 ![Menu Layout Demo](MenuLayout.gif)
-
+</div>
 ### 🛡️ New Security Reporting Modules
 | Module | Description |
 |--------|-------------|
@@ -200,4 +200,16 @@ Microsoft Graph PowerShell modules use .NET assemblies that can conflict when lo
 | Authentication failures | Verify account permissions and retry |
 | CSV export errors | Check file path permissions |
 | Graph API rate limits | Wait and retry after a few minutes |
+
+---
+<div align="center">
+
+**⭐ If this project helps you, please consider giving it a star! ⭐**
+
+Made with ❤️ by [SteffMet](https://github.com/SteffMet)
+
+*Last Updated: June 28, 2025*
+
+</div>
+
 
