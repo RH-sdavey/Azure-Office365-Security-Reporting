@@ -7,9 +7,9 @@
 .AUTHOR
     github.com/SteffMet
 .VERSION
-    3.0
+    3.5
 .DATE
-    June 26, 2025
+    June 28, 2025
 #>
 
 # Import modules
@@ -23,6 +23,9 @@ Import-Module $CoreModulePath -Force -Global
 Import-Module (Join-Path $ModulesPath "AzureSecurityIAM.psm1") -Force -Global
 Import-Module (Join-Path $ModulesPath "AzureSecurityDataProtection.psm1") -Force -Global
 Import-Module (Join-Path $ModulesPath "AzureSecurityOffice365.psm1") -Force -Global
+Import-Module (Join-Path $ModulesPath "AzureSecuritySettings.psm1") -Force -Global
+Import-Module (Join-Path $ModulesPath "AzureSecurityInfrastructure.psm1") -Force -Global
+Import-Module (Join-Path $ModulesPath "AzureSecuritySharePoint.psm1") -Force -Global
 
 # Teams submenu
 function Show-TeamsMenu {
@@ -116,6 +119,65 @@ function Show-DataProtectionMenu {
         $Choice = Read-Host "Please select an option (1-3)"
         
         switch ($Choice) {
+            "1" { Test-VMTLSConfiguration; Read-Host "Press Enter to continue" }
+            "2" { Test-VMEncryption; Read-Host "Press Enter to continue" }
+            "3" { return }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+
+# Azure Infrastructure Security submenu
+function Show-InfrastructureSecurityMenu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "Azure Infrastructure Security Checks" -ForegroundColor Cyan
+        Write-Host "====================================" -ForegroundColor Cyan
+        Write-Host "1. Azure Storage Security Report"
+        Write-Host "2. Azure Key Vault Security Report"
+        Write-Host "3. Network Security Groups Report"
+        Write-Host "4. Return to Main Menu"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-4)"
+        
+        switch ($Choice) {
+            "1" { Get-StorageSecurityReport; Read-Host "Press Enter to continue" }
+            "2" { Get-KeyVaultSecurityReport; Read-Host "Press Enter to continue" }
+            "3" { Get-NetworkSecurityReport; Read-Host "Press Enter to continue" }
+            "4" { return }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+
+# SharePoint & OneDrive Security submenu
+function Show-SharePointMenu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "SharePoint & OneDrive Security Checks" -ForegroundColor Cyan
+        Write-Host "=====================================" -ForegroundColor Cyan
+        Write-Host "1. SharePoint Sharing Settings Report"
+        Write-Host "2. OneDrive Security & Usage Report"
+        Write-Host "3. Data Loss Prevention (DLP) Policy Report"
+        Write-Host "4. Return to Main Menu"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-4)"
+        
+        switch ($Choice) {
+            "1" { Get-SharePointSharingReport; Read-Host "Press Enter to continue" }
+            "2" { Get-OneDriveSecurityReport; Read-Host "Press Enter to continue" }
+            "3" { Get-DLPPolicyReport; Read-Host "Press Enter to continue" }
+            "4" { return }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+        
+        switch ($Choice) {
             "1" { Test-TLSConfiguration; Read-Host "Press Enter to continue" }
             "2" { Test-VMEncryption; Read-Host "Press Enter to continue" }
             "3" { return }
@@ -133,17 +195,23 @@ function Show-MainMenu {
         Write-Host "================================================" -ForegroundColor Cyan
         Write-Host "1. Identity and Access Management Report (Azure AD)"
         Write-Host "2. Data Protection Report (Azure)"
-        Write-Host "3. Office 365 Security Report"
-        Write-Host "4. Exit"
+        Write-Host "3. Azure Infrastructure Security Report"
+        Write-Host "4. Office 365 Security Report"
+        Write-Host "5. SharePoint & OneDrive Security Report"
+        Write-Host "6. Settings & Configuration"
+        Write-Host "7. Exit"
         Write-Host ""
         
-        $Choice = Read-Host "Please select an option (1-4)"
+        $Choice = Read-Host "Please select an option (1-7)"
         
         switch ($Choice) {
             "1" { Show-IAMMenu }
             "2" { Show-DataProtectionMenu }
-            "3" { Show-Office365Menu }
-            "4" { 
+            "3" { Show-InfrastructureSecurityMenu }
+            "4" { Show-Office365Menu }
+            "5" { Show-SharePointMenu }
+            "6" { Show-SettingsMenu }
+            "7" { 
                 Write-ColorOutput "Thank you for using Azure & Office 365 Security Report!" "Green"
                 Write-ColorOutput "Log file saved as: $script:LogFile" "Yellow"
                 return 
@@ -156,17 +224,25 @@ function Show-MainMenu {
 # Main script execution
 function Main {
     Show-Title
-    Write-Log "Azure Security Report (Modular) v3.0 started" "INFO"
+    Write-Log "Azure Security Report (Modular) v3.5 started" "INFO"
+    
+    # Initialize configuration
+    Initialize-SecurityConfig | Out-Null
+    $Config = Get-SecurityConfig
     
     # Required modules for this script
     $RequiredModules = @(
         "Az.Accounts", 
         "Az.Compute", 
         "Az.Security",
-        "Az.ResourceGraph", 
+        "Az.ResourceGraph",
+        "Az.KeyVault",
+        "Az.Network",
+        "Az.Storage",
         "Microsoft.Graph.Users", 
         "Microsoft.Graph.Identity.SignIns",
         "Microsoft.Graph.Reports",
+        "Microsoft.Graph.Sites",
         "ExchangeOnlineManagement",
         "MicrosoftTeams"
     )
@@ -178,11 +254,21 @@ function Main {
         exit 1
     }
     
-    # Authenticate to Azure services
-    if (-not (Connect-AzureServices)) {
-        Write-Log "Authentication failed. Exiting." "ERROR"
-        Read-Host "Press Enter to exit"
-        exit 1
+    # Try auto-connect if configured
+    $AutoConnected = $false
+    if ($Config.AutoConnect -and $Config.UseServicePrincipal) {
+        Write-ColorOutput "Attempting auto-connect using saved configuration..." "Yellow"
+        $AutoConnected = Connect-UsingConfig
+    }
+    
+    # Manual authentication if auto-connect failed or not configured
+    if (-not $AutoConnected) {
+        Write-ColorOutput "Using interactive authentication..." "Yellow"
+        if (-not (Connect-AzureServices)) {
+            Write-Log "Authentication failed. Exiting." "ERROR"
+            Read-Host "Press Enter to exit"
+            exit 1
+        }
     }
     
     Write-ColorOutput "Authentication successful. Starting security audit..." "Green"

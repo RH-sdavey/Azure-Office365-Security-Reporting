@@ -1,0 +1,11 @@
+{
+  "Version": "3.1",
+  "TenantId": "",
+  "ApplicationId": "",
+  "AutoConnect": false,
+  "CertificateThumbprint": "",
+  "LastUpdated": "2025-06-28 15:10:09",
+  "LogLevel": "INFO",
+  "UseServicePrincipal": false,
+  "ExportPath": ".\\Reports"
+}
