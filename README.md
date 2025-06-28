@@ -1,17 +1,11 @@
 # 🛡️ Azure & Office 365 Security Report
 
-[![PowerShell](https://img.shields.io/badge/PowerShell-7.0+-blue.svg)](https://github.com/PowerShell/PowerShell)
-[![Azure](https://img.shields.io/badge/Azure-AD%20%7C%20Security-blue.svg)](https://azure.microsoft.com)
-[![Office365](https://img.shields.io/badge/Office%20365-Exchange%20%7C%20Teams-orange.svg)](https://www.office.com)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Contributions Welcome](https://img.shields.io/badge/Contributions-Welcome-brightgreen.svg)](CONTRIBUTING.md)
-[![Version](https://img.shields.io/badge/Version-3.5-brightgreen.svg)](https://github.com/SteffMet/Azure-Office365-Security-Reporting)
-
 > **A comprehensive PowerShell 7 security auditing tool for Azure and Office 365 environments**
 
 This project provides a modular, read-only security assessment script to help organizations identify security gaps, compliance issues, and cost optimization opportunities across Azure and Office 365 infrastructure.
 
 <div align="center">
+  
 ![Menu Layout Demo](MenuLayout.gif)
   
 </div>
@@ -159,6 +153,7 @@ Sites.Read.All
 - **Microsoft Teams**: Teams Administrator (read-only operations)
 - **SharePoint Online**: SharePoint Administrator (read-only operations)
 
+--- 
 ## 🛠️ Troubleshooting
 
 ### Microsoft Graph Assembly Conflicts
