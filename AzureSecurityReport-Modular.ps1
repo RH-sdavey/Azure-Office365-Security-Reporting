@@ -26,6 +26,8 @@ Import-Module (Join-Path $ModulesPath "AzureSecurityOffice365.psm1") -Force -Glo
 Import-Module (Join-Path $ModulesPath "AzureSecuritySettings.psm1") -Force -Global
 Import-Module (Join-Path $ModulesPath "AzureSecurityInfrastructure.psm1") -Force -Global
 Import-Module (Join-Path $ModulesPath "AzureSecuritySharePoint.psm1") -Force -Global
+Import-Module (Join-Path $ModulesPath "AzureComputeKQL.psm1") -Force -Global
+Import-Module (Join-Path $ModulesPath "AzureEntraID.psm1") -Force -Global
 
 # Teams submenu
 function Show-TeamsMenu {
@@ -88,7 +90,9 @@ function Show-IAMMenu {
         Write-Host "2. Check Guest User Access"
         Write-Host "3. Check Password Expiry Settings"
         Write-Host "4. Check Conditional Access Policies"
-        Write-Host "5. Return to Main Menu"
+        Write-Host "5. App Registration Key Report"
+        Write-Host "6. All SAM Account Names"
+        Write-Host "7. Return to Main Menu"
         Write-Host ""
         
         $Choice = Read-Host "Please select an option (1-5)"
@@ -98,7 +102,9 @@ function Show-IAMMenu {
             "2" { Test-GuestUserAccess; Read-Host "Press Enter to continue" }
             "3" { Test-PasswordExpirySettings; Read-Host "Press Enter to continue" }
             "4" { Test-ConditionalAccessPolicies; Read-Host "Press Enter to continue" }
-            "5" { return }
+            "5" { Get-AppRegistrationKeyReport; Read-Host "Press Enter to continue" }
+            "6" { Get-AllSamls; Read-Host "Press Enter to continue" }
+            "7" { return }
             default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
         }
     } while ($true)
@@ -176,11 +182,43 @@ function Show-SharePointMenu {
         }
     } while ($true)
 }
+
+function Show-AzureKQLQueriesMenu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "Azure KQL Queries" -ForegroundColor Cyan
+        Write-Host "==================" -ForegroundColor Cyan
+        Write-Host "1. Run Custom KQL Query"
+        Write-Host "2. Compute Queries"
+        Write-Host "2. Return to Main Menu"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-2)"
         
         switch ($Choice) {
-            "1" { Test-TLSConfiguration; Read-Host "Press Enter to continue" }
-            "2" { Test-VMEncryption; Read-Host "Press Enter to continue" }
-            "3" { return }
+            "1" { Read-Host "Press Enter to continue" }
+            "2" { Show-AzureComputeKQLQueriesMenu }
+            default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
+        }
+    } while ($true)
+}
+
+function Show-AzureComputeKQLQueriesMenu {
+    do {
+        Clear-Host
+        Show-Title
+        Write-Host "Azure Compute KQL Queries" -ForegroundColor Cyan
+        Write-Host "===========================" -ForegroundColor Cyan
+        Write-Host "1. Get VM DCR Associations"
+        Write-Host "2. Return to KQL Queries Menu"
+        Write-Host ""
+        
+        $Choice = Read-Host "Please select an option (1-2)"
+        
+        switch ($Choice) {
+            "1" { Get-AzureComputeDCRReport; Read-Host "Press Enter to continue" }
+            "2" { return }
             default { Write-ColorOutput "Invalid selection. Please try again." "Red"; Start-Sleep 2 }
         }
     } while ($true)
@@ -191,18 +229,17 @@ function Show-MainMenu {
     do {
         Clear-Host
         Show-Title
-        Write-Host "Read-Only Azure & Office 365 Security Audit Menu" -ForegroundColor Cyan
-        Write-Host "================================================" -ForegroundColor Cyan
-        Write-Host "1. Identity and Access Management Report (Azure AD)"
+        Write-Host "1. Identity and Access Management Report (Entra ID)"
         Write-Host "2. Data Protection Report (Azure)"
         Write-Host "3. Azure Infrastructure Security Report"
         Write-Host "4. Office 365 Security Report"
         Write-Host "5. SharePoint & OneDrive Security Report"
-        Write-Host "6. Settings & Configuration"
-        Write-Host "7. Exit"
+        Write-Host "6. Azure KQL Queries"
+        Write-Host "7. Settings & Configuration"
+        Write-Host "Q. Exit"
         Write-Host ""
         
-        $Choice = Read-Host "Please select an option (1-7)"
+        $Choice = Read-Host "Please select an option (1-6, Q)"
         
         switch ($Choice) {
             "1" { Show-IAMMenu }
@@ -210,8 +247,9 @@ function Show-MainMenu {
             "3" { Show-InfrastructureSecurityMenu }
             "4" { Show-Office365Menu }
             "5" { Show-SharePointMenu }
-            "6" { Show-SettingsMenu }
-            "7" { 
+            "6" { Show-AzureKQLQueriesMenu }
+            "7" { Show-SettingsMenu }
+            "Q" { 
                 Write-ColorOutput "Thank you for using Azure & Office 365 Security Report!" "Green"
                 Write-ColorOutput "Log file saved as: $script:LogFile" "Yellow"
                 return 

@@ -87,19 +87,21 @@ function Write-Log {
 function Write-ColorOutput {
     param(
         [string]$Message,
-        [string]$Color = "White"
+        [string]$Color = "White",
+        [bool]$Log = $true
     )
     Write-Host $Message -ForegroundColor $Color
-    Write-Log -Message $Message -Level "INFO"
+    if ($Log) {
+        Write-Log -Message $Message -Level "INFO"
+    }
 }
 
 # Function to display title
 function Show-Title {
     Clear-Host
-    Write-Host "------------------------------------------------------------------" -ForegroundColor Cyan
-    Write-Host "              AZURE & OFFICE 365 SECURITY REPORT SCRIPT " -ForegroundColor Yellow
-    Write-Host "               By github.com/SteffMet" -ForegroundColor Blue
-    Write-Host "------------------------------------------------------------------"
+    Write-ColorOutput "------------------------------------------------------------------" "Cyan" $false
+    Write-ColorOutput "      AZURE & OFFICE 365 SECURITY AND REPORTING TOOLBOX      " "Yellow" $false
+    Write-ColorOutput "------------------------------------------------------------------" "Cyan" $false
     Write-Host ""
 }
 

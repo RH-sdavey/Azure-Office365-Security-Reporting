@@ -4,11 +4,6 @@
 
 This project provides a modular, read-only security assessment script to help organizations identify security gaps, compliance issues, and cost optimization opportunities across Azure and Office 365 infrastructure.
 
-<div align="center">
-  
-![Menu Layout Demo](MenuLayout.gif)
-  
-</div>
 
 ### 🛡️ New Security Reporting Modules
 | Module | Description |
@@ -107,13 +102,7 @@ $PSVersionTable.PSVersion
 
 ### Installation
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/SteffMet/Azure-Office365-Security-Reporting.git
-   cd Azure-Office365-Security-Reporting
-   ```
-
-2. **Run the launcher script (Recommended):**
+1. **Run the launcher script (Recommended):**
    ```powershell
    .\Start-AzureSecurityReport.ps1
    ```
@@ -200,14 +189,3 @@ Microsoft Graph PowerShell modules use .NET assemblies that can conflict when lo
 | Graph API rate limits | Wait and retry after a few minutes |
 
 ---
-<div align="center">
-
-**⭐ If this project helps you, please consider giving it a star! ⭐**
-
-Made with ❤️ by [SteffMet](https://github.com/SteffMet)
-
-*Last Updated: June 28, 2025*
-
-</div>
-
-
