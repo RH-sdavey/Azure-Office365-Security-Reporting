@@ -6,18 +6,20 @@
     Simplified main script that uses modular components for security auditing
 #>
 
+$MenusPath = Join-Path $PSScriptRoot "Menus"
+$ModulesPath = Join-Path $PSScriptRoot "Modules"
 $CoreModulePath = Join-Path $ModulesPath "Core.psm1"
+
 Import-Module $CoreModulePath -Force -Global
 
-$MenusPath = Join-Path $PSScriptRoot "Menus"
 Import-Module (Join-Path $MenusPath "Main.psm1") -Force -Global
 Import-Module (Join-Path $MenusPath "IAM.psm1") -Force -Global
 Import-Module (Join-Path $MenusPath "Office365.psm1") -Force -Global
 Import-Module (Join-Path $MenusPath "DataProtection.psm1") -Force -Global
 Import-Module (Join-Path $MenusPath "Infrastructure.psm1") -Force -Global
 Import-Module (Join-Path $MenusPath "KQLQueries.psm1") -Force -Global
+Import-Module (Join-Path $MenusPath "ToolsUtilities.psm1") -Force -Global
 
-$ModulesPath = Join-Path $PSScriptRoot "Modules"
 Import-Module (Join-Path $ModulesPath "DataProtection.psm1") -Force -Global
 Import-Module (Join-Path $ModulesPath "IAM.psm1") -Force -Global
 Import-Module (Join-Path $ModulesPath "EntraID.psm1") -Force -Global
@@ -25,6 +27,7 @@ Import-Module (Join-Path $ModulesPath "Office365.psm1") -Force
 Import-Module (Join-Path $ModulesPath "Settings.psm1") -Force -Global
 Import-Module (Join-Path $ModulesPath "Infrastructure.psm1") -Force -Global
 Import-Module (Join-Path $ModulesPath "SharePoint.psm1") -Force -Global
+Import-Module (Join-Path $ModulesPath "ToolsUtilities.psm1") -Force -Global
 
 # KQL Queries modules
 Import-Module (Join-Path $ModulesPath "KQL" "AzureComputeKQL.psm1") -Force -Global

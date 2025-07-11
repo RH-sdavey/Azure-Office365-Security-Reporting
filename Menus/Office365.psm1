@@ -6,8 +6,7 @@ function Show-Office365Menu {
         Write-Host "=========================" -ForegroundColor Cyan
         Write-Host "1. License Usage Report"
         Write-Host "2. Inactive Accounts Report"
-        
-        Write-Host "3.5 Outlook"
+        Write-Host "3. Outlook"
         Write-Host "4. Microsoft Teams"
         Write-Host "5. SharePoint & OneDrive"
         Write-Host "6. Return to Main Menu"

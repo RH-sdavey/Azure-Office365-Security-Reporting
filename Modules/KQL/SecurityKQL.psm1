@@ -1,6 +1,3 @@
-
-
-
 function Get-AzureComputeDCRReport {
     <#
     .SYNOPSIS
@@ -11,17 +8,16 @@ function Get-AzureComputeDCRReport {
         Get-AzureComputeDCRReport
     #>
     $query = @"
-insightsresources
-| where type == 'microsoft.insights/datacollectionruleassociations'
-    | where id contains 'microsoft.compute/virtualmachines/'
-| project id = trim_start('/', tolower(id)), properties
-| extend idComponents = split(id, '/')
-| extend subscription = tolower(tostring(idComponents[1])), resourceGroup = tolower(tostring(idComponents[3])), vmName = tolower(tostring(idComponents[7]))
-| extend dcrId = properties['dataCollectionRuleId']
-| where isnotnull(dcrId)
-| extend dcrId = tostring(dcrId)
-| summarize dcrList = make_list(dcrId), dcrCount = count() by subscription, resourceGroup, vmName
-| sort by dcrCount desc
+securityresources
+| where type == "microsoft.security/assessments"
+| extend description = tostring(properties.metadata.description)
+| extend displayName = tostring(properties.displayName)
+| extend severity = tostring(properties.metadata.severity)
+| extend remediationDescription = tostring(properties.metadata.remediationDescription)
+| extend policyDefinitionId = tostring(properties.metadata.policyDefinitionId)
+| extend implementationEffort = tostring(properties.metadata.implementationEffort)
+| extend userImpact = tostring(properties.metadata.userImpact)
+| distinct name, description, displayName, severity, remediationDescription, policyDefinitionId, implementationEffort, userImpact
 "@
     
     Write-ColorOutput "Retrieving Data Collection Rule associations for Azure Virtual Machines..." "Cyan"

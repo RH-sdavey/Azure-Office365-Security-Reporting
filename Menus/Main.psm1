@@ -8,6 +8,7 @@ function Show-MainMenu {
         Write-Host "4. Office 365"
         Write-Host "5. Azure KQL Queries"
         Write-Host "7. Settings & Configuration"
+        Write-Host "8. Tools & Utilities"
         Write-Host "Q. Exit"
         Write-Host ""
         
@@ -20,6 +21,7 @@ function Show-MainMenu {
             "4" { Show-Office365Menu }
             "5" { Show-AzureKQLQueriesMenu }
             "7" { Show-SettingsMenu }
+            "8" { Show-ToolsMenu }
             "Q" { 
                 Write-ColorOutput "Thank you for using Azure & Office 365 Security Report!" "Green"
                 Write-ColorOutput "Log file saved as: $script:LogFile" "Yellow"
