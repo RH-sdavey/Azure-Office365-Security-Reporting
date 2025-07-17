@@ -34,3 +34,22 @@ function Get-AllSamls {
 
 
 }
+
+
+function Get-EntraIDAuditReport {
+    Write-ColorOutput "Generating Azure Resource Inventory Report..." "Yellow"
+    Write-Log "Starting Azure Resource Inventory Report" "INFO"
+    try {
+        $ScriptPath = Join-Path $PSScriptRoot "EntraFalcon" "run_EntraFalcon.ps1"
+        write-Log "Executing script: $ScriptPath" "INFO"
+        if (Test-Path $ScriptPath) {
+            . $ScriptPath -IncludeMsApps -AuthMethod "DeviceCode"
+        } else {
+            Write-ColorOutput "Entra ID Inventory script not found." "Red"
+            Write-Log "Entra ID Inventory script not found." "ERROR"
+        }
+    } catch {
+        Write-ColorOutput "Error generating Entra ID Inventory Report: $($_.Exception.Message)" "Red"
+        Write-Log "Error generating Entra ID Inventory Report: $($_.Exception.Message)" "ERROR"
+    }
+}

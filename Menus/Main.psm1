@@ -2,7 +2,7 @@ function Show-MainMenu {
     do {
         Clear-Host
         Show-Title
-        Write-Host "1. Identity and Access Management"
+        Write-Host "1. Entra ID & IAM"
         Write-Host "2. Data Protection"
         Write-Host "3. Azure Infrastructure"
         Write-Host "4. Office 365"
@@ -17,7 +17,7 @@ function Show-MainMenu {
         switch ($Choice) {
             "1" { Show-IAMMenu }
             "2" { Show-DataProtectionMenu }
-            "3" { Show-InfrastructureSecurityMenu }
+            "3" { Show-InfrastructureMenu }
             "4" { Show-Office365Menu }
             "5" { Show-AzureKQLQueriesMenu }
             "7" { Show-SettingsMenu }

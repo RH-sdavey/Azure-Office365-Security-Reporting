@@ -459,4 +459,23 @@ function Get-NetworkSecurityReport {
     }
 }
 
-Export-ModuleMember -Function Get-StorageSecurityReport, Get-KeyVaultSecurityReport, Get-NetworkSecurityReport
+function Get-AzureResourceInventoryReport {
+    Write-ColorOutput "Generating Azure Resource Inventory Report..." "Yellow"
+    Write-Log "Starting Azure Resource Inventory Report" "INFO"
+    try {
+        $ScriptPath = Join-Path $PSScriptRoot "ARI" "AzureResourceInventory.ps1"
+        write-Log "Executing script: $ScriptPath" "INFO"
+        if (Test-Path $ScriptPath) {
+            . $ScriptPath -Online
+        } else {
+            Write-ColorOutput "Azure Resource Inventory Report script not found." "Red"
+            Write-Log "Azure Resource Inventory Report script not found." "ERROR"
+        }
+    } catch {
+        Write-ColorOutput "Error generating Azure Resource Inventory Report: $($_.Exception.Message)" "Red"
+        Write-Log "Error generating Azure Resource Inventory Report: $($_.Exception.Message)" "ERROR"
+    }
+}
+
+
+Export-ModuleMember -Function Get-StorageSecurityReport, Get-KeyVaultSecurityReport, Get-NetworkSecurityReport, Get-AzureResourceInventoryReport
